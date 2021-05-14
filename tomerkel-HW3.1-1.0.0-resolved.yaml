@@ -1,0 +1,528 @@
+---
+openapi: 3.0.0
+info:
+  title: Simple Inventory API
+  description: This is a simple API
+  contact:
+    email: tomerkel@post.bgu.ac.il
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/tomerkel/HW3.1/1.0.0
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: developers
+  description: Operations available to regular developers
+paths:
+  /users/Register:
+    post:
+      tags:
+      - users
+      summary: This is the register
+      requestBody:
+        description: Register page
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example:
+              UserName: TheKing
+              FirstName: David
+              LastName: Ben-Yishi
+              Country: Israel
+              Password: david@888
+              Confirm Password: david@888
+              Email: davidtheking@gmail.com
+        required: true
+      responses:
+        "201":
+          description: A new user has been added
+        "400":
+          description: wrong input params
+  /users/login:
+    post:
+      tags:
+      - users
+      summary: This is the login
+      requestBody:
+        description: Login page
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example:
+              UserName: TheKing
+              password: david@888
+        required: true
+      responses:
+        "200":
+          description: Successfully logged in
+        "404":
+          description: Wrong username or password
+  /users/Details/{CoachID}:
+    get:
+      tags:
+      - users
+      summary: get data of the specific coach
+      parameters:
+      - name: CoachID
+        in: path
+        description: the id of the coach
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coach'
+        "404":
+          description: Coach not found
+  /users/Details/{PlayerID}:
+    get:
+      tags:
+      - users
+      summary: get data of the specific player
+      parameters:
+      - name: PlayerID
+        in: path
+        description: the id of the player
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+        "404":
+          description: Player not found
+  /users/Favorites/{PlayerID}:
+    post:
+      tags:
+      - users
+      summary: add player to user favorites players list
+      parameters:
+      - name: PlayerID
+        in: path
+        description: the id of the player
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerPreview'
+        "404":
+          description: Player not found
+  /users/Favorites/Players:
+    get:
+      tags:
+      - users
+      summary: get the list of favorites players
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FavPlayers'
+        "404":
+          description: Player not found
+  /users/Favorites/{TeamID}:
+    post:
+      tags:
+      - users
+      summary: add team to user favorites teams list
+      parameters:
+      - name: TeamID
+        in: path
+        description: the ID of the team
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Favorite Team page
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Team'
+        required: true
+      responses:
+        "201":
+          description: team added to favorites
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        "404":
+          description: Team not found
+  /users/Favorites/Teams:
+    get:
+      tags:
+      - users
+      summary: get the list of favorites teams
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FavTeams'
+        "404":
+          description: Team not found
+  /users/Favorites/{GameID}:
+    post:
+      tags:
+      - users
+      summary: add game to user favorites games list
+      parameters:
+      - name: GameID
+        in: path
+        description: the id of the game
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        "404":
+          description: Game not found
+  /users/Favorites/Games:
+    get:
+      tags:
+      - users
+      summary: get the list of favorites games
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FavGames'
+        "404":
+          description: Game not found
+  /users/Search/{TeamName}:
+    get:
+      tags:
+      - users
+      summary: get data of the specific team
+      parameters:
+      - name: TeamName
+        in: path
+        description: the name of the team
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamPreviewList'
+        "404":
+          description: Team not found
+  /users/Search/{PlayerName}:
+    get:
+      tags:
+      - users
+      summary: get data of the specific player
+      parameters:
+      - name: PlayerName
+        in: path
+        description: the name of the player
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerPreviewList'
+        "404":
+          description: Player not found
+  /users/Search/{CoachName}:
+    get:
+      tags:
+      - users
+      summary: get data of the specific coach
+      parameters:
+      - name: CoachName
+        in: path
+        description: the name of the coach
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoachPreviewList'
+        "404":
+          description: Coach not found
+  /League:
+    get:
+      tags:
+      - League
+      summary: get the data of the league
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaguePreview'
+        "404":
+          description: League not found
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        UserName:
+          maxLength: 8
+          minLength: 3
+          type: string
+        FirstName:
+          type: string
+        LastName:
+          type: string
+        Country:
+          type: string
+        Password:
+          maxLength: 10
+          minLength: 5
+          type: string
+          format: password
+        Confirm Password:
+          maxLength: 10
+          minLength: 5
+          type: string
+          format: password
+        Email:
+          type: string
+          format: email
+        image-url:
+          type: string
+          format: URL
+        Favorites:
+          $ref: '#/components/schemas/Favorites'
+    Coach:
+      type: object
+      properties:
+        ID:
+          type: integer
+        CoachPreview:
+          $ref: '#/components/schemas/CoachPreview'
+        CommonName:
+          type: string
+        Nation:
+          type: string
+        BirthDate:
+          type: string
+          format: date
+        BirthCountry:
+          type: string
+    CoachPreview:
+      type: object
+      properties:
+        FullName:
+          type: string
+        TeamName:
+          type: string
+        image-url:
+          type: string
+          format: URL
+    CoachPreviewList:
+      type: array
+      items:
+        $ref: '#/components/schemas/CoachPreview'
+    Player:
+      type: object
+      properties:
+        ID:
+          type: integer
+        PlayerPreview:
+          $ref: '#/components/schemas/PlayerPreview'
+        CommonName:
+          type: string
+        Nation:
+          type: string
+        BirthDate:
+          type: string
+          format: date
+        BirthCountry:
+          type: string
+        Height:
+          type: number
+        Weight:
+          type: number
+    PlayerPreview:
+      type: object
+      properties:
+        FullName:
+          type: string
+        TeamName:
+          type: string
+        image-url:
+          type: string
+          format: URL
+        PositionNumber:
+          type: integer
+    PlayerPreviewList:
+      type: array
+      items:
+        $ref: '#/components/schemas/PlayerPreview'
+    Team:
+      type: object
+      properties:
+        TeamPreview:
+          $ref: '#/components/schemas/TeamPreview'
+        Players:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerPreview'
+        Coach:
+          $ref: '#/components/schemas/CoachPreview'
+        GamesHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/Game'
+        FutureGames:
+          type: array
+          items:
+            $ref: '#/components/schemas/GamePreview'
+    TeamPreview:
+      type: object
+      properties:
+        TeamName:
+          type: string
+        Logo-url:
+          type: string
+          format: URL
+    TeamPreviewList:
+      type: array
+      items:
+        $ref: '#/components/schemas/TeamPreview'
+    GamePreview:
+      properties:
+        Date:
+          type: string
+          format: date
+        Hour:
+          type: string
+        HomeTeam:
+          $ref: '#/components/schemas/TeamPreview'
+        AwayTeam:
+          $ref: '#/components/schemas/TeamPreview'
+        Stadium:
+          type: string
+    Game:
+      type: object
+      properties:
+        ID:
+          type: integer
+        GamePreview:
+          $ref: '#/components/schemas/GamePreview'
+        Score:
+          type: string
+        EventSchedule:
+          $ref: '#/components/schemas/EventSchedule'
+    FavPlayers:
+      type: array
+      items:
+        $ref: '#/components/schemas/PlayerPreview'
+    FavTeams:
+      type: array
+      items:
+        $ref: '#/components/schemas/TeamPreview'
+    FavGames:
+      type: array
+      items:
+        $ref: '#/components/schemas/GamePreview'
+    Favorites:
+      type: object
+      properties:
+        FavoritePlayers:
+          $ref: '#/components/schemas/FavPlayers'
+        FavoriteTeams:
+          $ref: '#/components/schemas/FavTeams'
+        FavoriteGames:
+          $ref: '#/components/schemas/FavGames'
+    EventType:
+      type: string
+      enum:
+      - Goal
+      - Offside
+      - Foal
+      - Red card
+      - Yellow card
+      - Injury
+      - Substitution
+    Event:
+      type: object
+      properties:
+        Date:
+          type: string
+          format: date
+        Hour:
+          type: string
+        Minute:
+          maximum: 90
+          minimum: 0
+          type: integer
+        Type:
+          $ref: '#/components/schemas/EventType'
+        Description:
+          type: string
+    EventSchedule:
+      type: array
+      items:
+        $ref: '#/components/schemas/Event'
+    LeaguePreview:
+      type: object
+      properties:
+        LeagueName:
+          type: string
+        SeasonName:
+          type: string
+        CurrentStage:
+          type: string
+        NextGame:
+          $ref: '#/components/schemas/GamePreview'
